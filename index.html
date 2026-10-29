@@ -1,0 +1,584 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#e9e5dc">
+<title>Calculadora de Premios - Quiniela Santa Fe</title>
+
+<style>
+:root {
+  --bg: #f4f1eb;
+  --panel: #fffdf9;
+  --ink: #28312f;
+  --muted: #69716d;
+  --accent: #8c7950;
+  --accent-soft: #eee6d4;
+  --line: #e5dfd4;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+header {
+  padding: 28px 16px 20px;
+  text-align: center;
+  background: #e9e5dc;
+  border-bottom: 1px solid var(--line);
+}
+
+header h1 {
+  font-size: clamp(1.6rem, 4vw, 2.25rem);
+  margin: 8px 0;
+}
+
+header p { color: var(--muted); margin: 0; }
+
+main {
+  width: min(920px, 100%);
+  margin: 22px auto;
+  padding: 0 14px 36px;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tab {
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 14px;
+  background: var(--panel);
+  color: var(--ink);
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: var(--accent-soft);
+  border-color: #c7b58f;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 5px 20px #3b32200a;
+}
+
+h2 { margin-top: 0; font-size: 1.2rem; }
+
+.help { color: var(--muted); margin-bottom: 20px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+label { font-weight: bold; }
+
+input, select {
+  width: 100%;
+  min-height: 48px;
+  padding: 11px;
+  border: 1px solid #d8d2c7;
+  border-radius: 10px;
+  background: white;
+  color: var(--ink);
+  font: inherit;
+}
+
+.small { font-size: .82rem; color: var(--muted); }
+
+.lottery-box {
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.lottery-title { font-weight: bold; margin-bottom: 10px; }
+
+.lotteries {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.lottery {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8f6f1;
+  padding: 10px;
+  border-radius: 9px;
+  font-size: .9rem;
+}
+
+.lottery input {
+  width: 18px;
+  min-height: 18px;
+  accent-color: var(--accent);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+button { cursor: pointer; font: inherit; }
+
+.primary {
+  flex: 1;
+  min-height: 50px;
+  background: #3e4943;
+  color: white;
+  border: none;
+  border-radius: 11px;
+  font-weight: bold;
+  padding: 12px;
+}
+
+.secondary {
+  min-height: 50px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 12px 18px;
+  font-weight: bold;
+}
+
+.result {
+  display: none;
+  margin-top: 18px;
+  border: 1px solid #d7c9a9;
+  background: #f7f2e7;
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.result.visible { display: block; }
+
+.result-label { color: var(--muted); font-weight: bold; }
+
+.amount {
+  font-size: clamp(1.8rem, 7vw, 2.7rem);
+  font-weight: 850;
+  margin: 5px 0;
+  overflow-wrap: anywhere;
+}
+
+.disclaimer { font-size: .88rem; color: var(--muted); }
+
+.error {
+  display: none;
+  margin-top: 14px;
+  background: #f8e9e5;
+  color: #7d2c20;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.error.visible { display: block; }
+.hidden { display: none !important; }
+
+footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: .82rem;
+  padding: 20px;
+}
+
+@media(max-width:560px) {
+  main { margin-top: 14px; }
+  .grid { grid-template-columns: 1fr; }
+  .lotteries { grid-template-columns: repeat(2, 1fr); }
+  .actions { flex-direction: column; }
+  .actions button { width: 100%; }
+  .card { padding: 17px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div>QUINIELA SANTA FE</div>
+  <h1>Calculadora de premios</h1>
+  <p>Completá tu jugada y consultá cuánto podrías ganar.</p>
+</header>
+
+<main>
+
+<div class="tabs">
+  <button class="tab active" id="tab-simple">
+    Jugada simple
+  </button>
+  <button class="tab" id="tab-redob">
+    Redoblona
+  </button>
+</div>
+
+<!-- JUGADA SIMPLE -->
+
+<section class="card" id="simple-panel">
+
+<h2>Calcular jugada simple</h2>
+<p class="help">Ingresá los datos de tu jugada.</p>
+
+<div class="grid">
+
+  <div class="field">
+    <label>Número jugado</label>
+    <input id="s-number" inputmode="numeric"
+      maxlength="4" placeholder="Ej.: 27 o 042">
+    <span class="small">De 1 a 4 cifras.</span>
+  </div>
+
+  <div class="field">
+    <label>Ubicación / alcance</label>
+    <select id="s-reach">
+      <option value="">Elegir alcance</option>
+      <option>1</option><option>2</option>
+      <option>3</option><option>4</option>
+      <option>5</option><option>10</option>
+      <option>20</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Importe apostado ($)</label>
+    <input id="s-amount" type="number"
+      min="200" max="50000" placeholder="Mín. $200 · Máx. $50.000">
+  </div>
+
+  <div class="field">
+    <label>Modalidad del importe</label>
+    <select id="s-mode">
+      <option value="total">Importe total repartido</option>
+      <option value="each">Importe por cada lotería</option>
+    </select>
+  </div>
+
+</div>
+
+<div class="lottery-box">
+  <div class="lottery-title">Elegí las loterías</div>
+  <div class="lotteries" id="s-lotteries"></div>
+</div>
+
+<div class="error" id="s-error"></div>
+
+<div class="actions">
+  <button class="primary" id="s-calc">Calcular premio</button>
+  <button class="secondary" id="s-clear">Limpiar</button>
+</div>
+
+<div class="result" id="s-result">
+  <div class="result-label">Premio total estimado</div>
+  <div class="amount" id="s-total"></div>
+  <p class="disclaimer">Importe potencial según los datos ingresados.</p>
+</div>
+
+</section>
+
+<!-- REDOBLONA -->
+
+<section class="card hidden" id="redob-panel">
+
+<h2>Calcular redoblona</h2>
+<p class="help">Ingresá los dos números y sus respectivos alcances.</p>
+
+<div class="grid">
+
+  <div class="field">
+    <label>Primer número</label>
+    <input id="r-n1" inputmode="numeric"
+      maxlength="2" placeholder="Ej.: 14">
+  </div>
+
+  <div class="field">
+    <label>Alcance del primer número</label>
+    <select id="r-a1">
+      <option value="">Elegir alcance</option>
+      <option>1</option><option>2</option>
+      <option>3</option><option>4</option>
+      <option>5</option><option>10</option>
+      <option>20</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Segundo número</label>
+    <input id="r-n2" inputmode="numeric"
+      maxlength="2" placeholder="Ej.: 21">
+  </div>
+
+  <div class="field">
+    <label>Alcance del segundo número</label>
+    <select id="r-a2">
+      <option value="">Elegir alcance</option>
+      <option>1</option><option>2</option>
+      <option>3</option><option>4</option>
+      <option>5</option><option>10</option>
+      <option>20</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label>Importe apostado ($)</label>
+    <input id="r-amount" type="number"
+      min="200" max="50000" placeholder="Mín. $200 · Máx. $50.000">
+  </div>
+
+  <div class="field">
+    <label>Modalidad del importe</label>
+    <select id="r-mode">
+      <option value="total">Importe total repartido</option>
+      <option value="each">Importe por cada lotería</option>
+    </select>
+  </div>
+
+</div>
+
+<div class="lottery-box">
+  <div class="lottery-title">Elegí las loterías</div>
+  <div class="lotteries" id="r-lotteries"></div>
+</div>
+
+<div class="error" id="r-error"></div>
+
+<div class="actions">
+  <button class="primary" id="r-calc">Calcular premio</button>
+  <button class="secondary" id="r-clear">Limpiar</button>
+</div>
+
+<div class="result" id="r-result">
+  <div class="result-label">Premio total estimado</div>
+  <div class="amount" id="r-total"></div>
+  <p class="disclaimer">Importe potencial si ambos números aciertan en sus alcances.</p>
+</div>
+
+</section>
+</main>
+
+<footer>Calculadora orientativa de premios.</footer>
+
+<script>
+
+// ALCANCES PERMITIDOS
+const REACHES = [1,2,3,4,5,10,20];
+
+// PREMIOS POR CADA $1 APOSTADO
+const PRIZES = {
+  1: {1:7, 2:3.50, 3:2.33, 4:1.75, 5:1.40, 10:0.70, 20:0.35},
+  2: {1:70, 2:35, 3:23.33, 4:17.50, 5:14, 10:7, 20:3.50},
+  3: {1:600, 2:300, 3:200, 4:150, 5:120, 10:60, 20:30},
+  4: {1:3500, 2:1750, 3:1166.67, 4:875, 5:700, 10:350, 20:175}
+};
+
+// LOTERÍAS DISPONIBLES
+const LOTTERIES = [
+  "Nacional",
+  "Buenos Aires",
+  "Santa Fe",
+  "Entre Ríos",
+  "Oro/Montevideo",
+  "Córdoba"
+];
+
+const $ = id => document.getElementById(id);
+
+function money(n) {
+  return new Intl.NumberFormat("es-AR", {
+    style:"currency",
+    currency:"ARS",
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
+  }).format(n);
+}
+
+// CREAR SELECTORES DE LOTERÍAS
+function setupLotteries(id) {
+  $(id).innerHTML = LOTTERIES.map(name =>
+    `<label class="lottery">
+      <input type="checkbox" value="${name}">
+      ${name}
+    </label>`
+  ).join("");
+}
+
+setupLotteries("s-lotteries");
+setupLotteries("r-lotteries");
+
+function chosen(id) {
+  return [...$(id).querySelectorAll("input:checked")]
+    .map(x => x.value);
+}
+
+function showError(prefix, message) {
+  $(prefix+"-error").textContent = message;
+  $(prefix+"-error").classList.add("visible");
+  $(prefix+"-result").classList.remove("visible");
+}
+
+function clearError(prefix) {
+  $(prefix+"-error").classList.remove("visible");
+}
+
+function validAmount(value) {
+  return Number.isFinite(value) &&
+    value >= 200 && value <= 50000;
+}
+
+function stakePerLottery(amount, mode, count) {
+  return mode === "each" ? amount : amount / count;
+}
+
+// CALCULAR JUGADA SIMPLE
+function simple() {
+
+  const num = $("s-number").value.trim();
+  const reach = Number($("s-reach").value);
+  const amount = Number($("s-amount").value);
+  const mode = $("s-mode").value;
+  const lots = chosen("s-lotteries");
+
+  clearError("s");
+
+  if (!/^\d{1,4}$/.test(num))
+    return showError("s","Ingresá un número de 1 a 4 cifras.");
+
+  if (!REACHES.includes(reach))
+    return showError("s","Elegí un alcance válido.");
+
+  if (!validAmount(amount))
+    return showError("s","El importe debe ser entre $200 y $50.000.");
+
+  if (!lots.length)
+    return showError("s","Seleccioná al menos una lotería.");
+
+  const digits = num.length;
+  const multiplier = PRIZES[digits][reach];
+
+  const stake = stakePerLottery(amount, mode, lots.length);
+
+  const total = multiplier * stake;
+
+  $("s-total").textContent = money(total);
+  $("s-result").classList.add("visible");
+}
+
+// CALCULAR REDOBLONA
+function redoblona() {
+
+  const n1 = $("r-n1").value.trim();
+  const n2 = $("r-n2").value.trim();
+
+  const a1 = Number($("r-a1").value);
+  const a2 = Number($("r-a2").value);
+
+  const amount = Number($("r-amount").value);
+  const mode = $("r-mode").value;
+
+  const lots = chosen("r-lotteries");
+
+  clearError("r");
+
+  if (!/^\d{2}$/.test(n1) || !/^\d{2}$/.test(n2))
+    return showError("r","Los dos números deben tener exactamente 2 cifras.");
+
+  if (!REACHES.includes(a1) || !REACHES.includes(a2))
+    return showError("r","Elegí un alcance válido para cada número.");
+
+  if (a1 === 1 && a2 === 1)
+    return showError("r","No se permite jugar ambos números a la cabeza.");
+
+  if (!validAmount(amount))
+    return showError("r","El importe debe ser entre $200 y $50.000.");
+
+  if (!lots.length)
+    return showError("r","Seleccioná al menos una lotería.");
+
+  const count = lots.length;
+
+  const stake = stakePerLottery(amount, mode, count);
+
+  // PRIMERA REDOBLONA
+  const first = (70 / a1) * stake;
+
+  // SEGUNDA REDOBLONA
+  const total = (70 / a2) * first /
+    (mode === "each" ? 1 : count);
+
+  $("r-total").textContent = money(total);
+  $("r-result").classList.add("visible");
+}
+
+// LIMPIAR CAMPOS
+function clear(prefix) {
+
+  const ids = prefix === "s"
+    ? ["s-number","s-reach","s-amount"]
+    : ["r-n1","r-a1","r-n2","r-a2","r-amount"];
+
+  ids.forEach(id => $(id).value = "");
+
+  $(prefix+"-mode").value = "total";
+
+  $(prefix+"-lotteries")
+    .querySelectorAll("input")
+    .forEach(x => x.checked = false);
+
+  $(prefix+"-result").classList.remove("visible");
+  clearError(prefix);
+}
+
+// EVENTOS
+$("s-calc").addEventListener("click",simple);
+$("r-calc").addEventListener("click",redoblona);
+
+$("s-clear").addEventListener("click",() => clear("s"));
+$("r-clear").addEventListener("click",() => clear("r"));
+
+// CAMBIAR ENTRE CALCULADORAS
+function tab(which) {
+
+  const isSimple = which === "simple";
+
+  $("simple-panel").classList.toggle("hidden",!isSimple);
+  $("redob-panel").classList.toggle("hidden",isSimple);
+
+  $("tab-simple").classList.toggle("active",isSimple);
+  $("tab-redob").classList.toggle("active",!isSimple);
+}
+
+$("tab-simple").addEventListener("click",() => tab("simple"));
+$("tab-redob").addEventListener("click",() => tab("redob"));
+
+</script>
+</body>
+</html>

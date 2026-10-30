@@ -4,21 +4,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#e9e5dc">
+<meta name="theme-color" content="#000000">
 <title>Calculadora de Premios - Quiniela Santa Fe</title>
 
 <style>
 :root {
-  --bg: #f4f1eb;
-  --panel: #fffdf9;
-  --ink: #28312f;
-  --muted: #69716d;
-  --accent: #8c7950;
-  --accent-soft: #eee6d4;
-  --line: #e5dfd4;
+  --bg: #000000;
+  --panel: #1c1c1e;
+  --ink: #f5f5f7;
+  --muted: #a1a1a6;
+  --accent: #ffb900;
+  --accent-soft: #38301a;
+  --line: #38383a;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
@@ -32,16 +34,20 @@ body {
 header {
   padding: 28px 16px 20px;
   text-align: center;
-  background: #e9e5dc;
+  background: #111112;
   border-bottom: 1px solid var(--line);
 }
 
 header h1 {
   font-size: clamp(1.6rem, 4vw, 2.25rem);
   margin: 8px 0;
+  color: #ffffff;
 }
 
-header p { color: var(--muted); margin: 0; }
+header p {
+  color: var(--muted);
+  margin: 0;
+}
 
 main {
   width: min(920px, 100%);
@@ -60,16 +66,17 @@ main {
   border: 1px solid var(--line);
   border-radius: 13px;
   padding: 14px;
-  background: var(--panel);
-  color: var(--ink);
+  background: #252527;
+  color: #ffffff;
   font-weight: bold;
   font-size: 1rem;
   cursor: pointer;
 }
 
 .tab.active {
-  background: var(--accent-soft);
-  border-color: #c7b58f;
+  background: #ffb900;
+  color: #171717;
+  border-color: #ffcb45;
 }
 
 .card {
@@ -77,12 +84,19 @@ main {
   border: 1px solid var(--line);
   border-radius: 18px;
   padding: 24px;
-  box-shadow: 0 5px 20px #3b32200a;
+  box-shadow: 0 5px 20px #00000055;
 }
 
-h2 { margin-top: 0; font-size: 1.2rem; }
+h2 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  color: #ffffff;
+}
 
-.help { color: var(--muted); margin-bottom: 20px; }
+.help {
+  color: var(--muted);
+  margin-bottom: 20px;
+}
 
 .grid {
   display: grid;
@@ -96,29 +110,52 @@ h2 { margin-top: 0; font-size: 1.2rem; }
   gap: 6px;
 }
 
-label { font-weight: bold; }
+label {
+  font-weight: bold;
+}
 
-input, select {
+input,
+select {
   width: 100%;
   min-height: 48px;
   padding: 11px;
-  border: 1px solid #d8d2c7;
+  border: 1px solid #48484a;
   border-radius: 10px;
-  background: white;
-  color: var(--ink);
+  background: #2c2c2e;
+  color: #ffffff;
   font: inherit;
+  color-scheme: dark;
 }
 
-.small { font-size: .82rem; color: var(--muted); }
+input::placeholder {
+  color: #8e8e93;
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid #ffb900;
+  outline-offset: 1px;
+  border-color: #ffb900;
+}
+
+.small {
+  font-size: .82rem;
+  color: var(--muted);
+}
 
 .lottery-box {
   margin-top: 16px;
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 12px;
+  background: #202022;
 }
 
-.lottery-title { font-weight: bold; margin-bottom: 10px; }
+.lottery-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
 
 .lotteries {
   display: grid;
@@ -130,16 +167,20 @@ input, select {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #f8f6f1;
+  background: #303033;
+  color: #f5f5f7;
   padding: 10px;
   border-radius: 9px;
   font-size: .9rem;
+  border: 1px solid #414144;
 }
 
 .lottery input {
   width: 18px;
   min-height: 18px;
-  accent-color: var(--accent);
+  padding: 0;
+  accent-color: #ffb900;
+  flex-shrink: 0;
 }
 
 .actions {
@@ -148,77 +189,141 @@ input, select {
   margin-top: 20px;
 }
 
-button { cursor: pointer; font: inherit; }
+button {
+  cursor: pointer;
+  font: inherit;
+}
+
+/* BOTÓN CALCULAR AMARILLO */
 
 .primary {
   flex: 1;
   min-height: 50px;
-  background: #3e4943;
-  color: white;
+  background: #ffb900;
+  color: #171717;
   border: none;
   border-radius: 11px;
   font-weight: bold;
   padding: 12px;
+  transition: background .2s, transform .2s;
 }
+
+.primary:hover {
+  background: #ffd04a;
+}
+
+.primary:active {
+  transform: scale(.98);
+}
+
+/* BOTÓN LIMPIAR ROJO */
 
 .secondary {
   min-height: 50px;
-  background: transparent;
-  border: 1px solid var(--line);
+  background: #e53935;
+  color: #ffffff;
+  border: none;
   border-radius: 11px;
   padding: 12px 18px;
   font-weight: bold;
+  transition: background .2s, transform .2s;
 }
+
+.secondary:hover {
+  background: #ff514c;
+}
+
+.secondary:active {
+  transform: scale(.98);
+}
+
+/* RESULTADOS */
 
 .result {
   display: none;
   margin-top: 18px;
-  border: 1px solid #d7c9a9;
-  background: #f7f2e7;
+  border: 1px solid #66521c;
+  background: #292315;
+  color: #ffffff;
   border-radius: 14px;
   padding: 18px;
 }
 
-.result.visible { display: block; }
+.result.visible {
+  display: block;
+}
 
-.result-label { color: var(--muted); font-weight: bold; }
+.result-label {
+  color: #ffcc45;
+  font-weight: bold;
+}
 
 .amount {
   font-size: clamp(1.8rem, 7vw, 2.7rem);
   font-weight: 850;
   margin: 5px 0;
+  color: #ffca28;
   overflow-wrap: anywhere;
 }
 
-.disclaimer { font-size: .88rem; color: var(--muted); }
+.disclaimer {
+  font-size: .88rem;
+  color: var(--muted);
+}
+
+/* MENSAJES DE ERROR */
 
 .error {
   display: none;
   margin-top: 14px;
-  background: #f8e9e5;
-  color: #7d2c20;
+  background: #3a1719;
+  color: #ff7777;
+  border: 1px solid #8f292d;
   padding: 12px;
   border-radius: 10px;
   font-weight: bold;
 }
 
-.error.visible { display: block; }
-.hidden { display: none !important; }
+.error.visible {
+  display: block;
+}
+
+.hidden {
+  display: none !important;
+}
 
 footer {
   text-align: center;
   color: var(--muted);
   font-size: .82rem;
   padding: 20px;
+  border-top: 1px solid #252527;
 }
 
 @media(max-width:560px) {
-  main { margin-top: 14px; }
-  .grid { grid-template-columns: 1fr; }
-  .lotteries { grid-template-columns: repeat(2, 1fr); }
-  .actions { flex-direction: column; }
-  .actions button { width: 100%; }
-  .card { padding: 17px; }
+  main {
+    margin-top: 14px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lotteries {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+
+  .card {
+    padding: 17px;
+  }
 }
 </style>
 </head>
